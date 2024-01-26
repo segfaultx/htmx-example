@@ -1,0 +1,28 @@
+{{define "table_row"}}
+    <tr>
+        <td>{{.Company}}</td>
+        <td>{{.Contact}}</td>
+        <td>{{.Country}}</td>
+        <td>
+            <button class="btn btn-primary"
+                    hx-get="/data/{{.Id}}/edit"
+                    hx-trigger="edit"
+                    onClick="let editing = document.querySelector('.editing')
+                         if(editing) {
+                           Swal.fire({title: 'Already Editing',
+                                      showCancelButton: true,
+                                      confirmButtonText: 'Yep, Edit This Row!',
+                                      text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
+                           .then((result) => {
+                                if(result.isConfirmed) {
+                                   htmx.trigger(editing, 'cancel')
+                                }
+                                htmx.trigger(this, 'edit')
+                            })
+                         } else {
+                            htmx.trigger(this, 'edit')
+                         }">
+                Edit
+            </button>
+    </tr>
+{{end}}

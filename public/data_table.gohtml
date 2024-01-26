@@ -1,0 +1,40 @@
+{{define "data_table"}}
+    <style>
+        th:hover {
+            cursor: pointer;
+        }
+    </style>
+    <table class="table" id="table">
+        <tr>
+            <th hx-get="/data?sort=company{{if .SortDirection}}&direction={{.SortDirection}}{{end}}" hx-target="#table"
+                hx-swap="outerHTML" hx-trigger="click">Company
+                {{if eq .SortBy "company"}}
+                    <i class='fa-solid fa-sort-{{if eq .SortDirection "asc"}}up{{else}}down{{end}}'></i>
+                {{else}}
+                    <i class="fa-solid fa-sort"></i>
+                {{end}}
+            </th>
+            <th hx-get="/data?sort=contact{{if .SortDirection}}&direction={{.SortDirection}}{{end}}" hx-target="#table"
+                hx-swap="outerHTML" hx-trigger="click">Contact
+                {{if eq .SortBy "contact"}}
+                    <i class='fa-solid fa-sort-{{if eq .SortDirection "asc"}}up{{else}}down{{end}}'></i>
+                {{else}}
+                    <i class="fa-solid fa-sort"></i>
+                {{end}}
+            </th>
+            <th hx-get="/data?sort=country{{if .SortDirection}}&direction={{.SortDirection}}{{end}}" hx-target="#table"
+                hx-swap="outerHTML" hx-trigger="click">Country
+                {{if eq .SortBy "country"}}
+                    <i class='fa-solid fa-sort-{{if eq .SortDirection "asc"}}up{{else}}down{{end}}'></i>
+                {{else}}
+                    <i class="fa-solid fa-sort"></i>
+                {{end}}
+            </th>
+        </tr>
+        <tbody hx-target="closest tr" hx-swap="outerHTML">
+        {{range $row := .Data}}
+            {{template "table_row" $row}}
+        {{end}}
+        </tbody>
+    </table>
+{{end}}

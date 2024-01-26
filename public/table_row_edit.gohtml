@@ -1,0 +1,21 @@
+{{define "table_row_edit"}}
+    <tr hx-trigger='cancel' class='editing' hx-get="/data/{{.Id}}">
+        <td>
+            <input name='Company' value='{{.Company}}'>
+        </td>
+        <td>
+            <input name='Contact' value='{{.Contact}}'>
+        </td>
+        <td>
+            <input name="Country" value="{{.Country}}">
+        </td>
+        <td>
+            <button class="btn btn-outline-primary" hx-get="/data/{{.Id}}">
+                Cancel
+            </button>
+            <button class="btn btn-primary" hx-put="/data/{{.Id}}" hx-include="closest tr">
+                Save
+            </button>
+        </td>
+    </tr>
+{{end}}
