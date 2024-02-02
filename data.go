@@ -62,10 +62,12 @@ func HandleData(c echo.Context) error {
 	if !isLoggedIn {
 		return c.Redirect(http.StatusFound, "/")
 	}
+	c.Response().Header().Set("HX-Replace-URL", "/data")
 
 	var data = map[string]interface{}{"Data": Tabledata}
 	sortBy := c.QueryParam("sort")
 	direction := c.QueryParam("direction")
+	start, err := strconv.Atoi(c.QueryParam("from"))
 
 	if sortBy != "" {
 		switch direction {
@@ -77,13 +79,34 @@ func HandleData(c echo.Context) error {
 			direction = "asc"
 		}
 		data["SortDirection"] = direction
-		data["Data"] = sortDataBy(Tabledata, sortBy, direction)
+		var dataSlice []TableData
+		if err != nil && ((start + 100) < len(Tabledata)) {
+			dataSlice = Tabledata[start : start+100]
+		} else {
+			dataSlice = Tabledata[0:100]
+		}
+
+		data["Data"] = sortDataBy(dataSlice, sortBy, direction)
 	} else {
 		data["SortDirection"] = nil
-		data["Data"] = Tabledata
+		if err == nil && ((start + 100) < len(Tabledata)) {
+			data["Data"] = Tabledata[start : start+100]
+		} else {
+			data["Data"] = Tabledata[0:100]
+		}
 	}
 	data["SortBy"] = sortBy
-	return c.Render(http.StatusOK, "data_table", data)
+	if err == nil {
+		if (start + 100) > len(Tabledata) {
+			return c.JSON(http.StatusOK, "done")
+		}
+		data["Start"] = start + 100
+	} else {
+		data["Start"] = 100
+		return c.Render(http.StatusOK, "data_table", data)
+	}
+
+	return c.Render(http.StatusOK, "data_table_content", data)
 }
 
 func HandleDataById(c echo.Context) error {

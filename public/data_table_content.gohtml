@@ -1,0 +1,6 @@
+{{define "data_table_content"}}
+    {{range $row := .Data}}
+        {{template "table_row" $row}}
+    {{end}}
+    <tr hx-trigger="revealed" hx-swap="outerHTML" hx-get="/data?from={{.Start}}"></tr>
+{{end}}

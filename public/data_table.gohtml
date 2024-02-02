@@ -32,9 +32,7 @@
             </th>
         </tr>
         <tbody hx-target="closest tr" hx-swap="outerHTML">
-        {{range $row := .Data}}
-            {{template "table_row" $row}}
-        {{end}}
+        {{template "data_table_content" .}}
         </tbody>
     </table>
 {{end}}

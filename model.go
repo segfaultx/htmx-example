@@ -1,5 +1,12 @@
 package main
 
+import (
+	"encoding/json"
+	"io"
+	"log"
+	"os"
+)
+
 type TableData struct {
 	Id      int
 	Company string `form:"company"`
@@ -7,35 +14,27 @@ type TableData struct {
 	Country string `form:"country"`
 }
 
-var Tabledata = []TableData{
-	{1,
-		"Alfreds Futterkiste",
-		"Maria Anders",
-		"Germany",
-	},
-	{2,
-		"Centro comercial Moctezuma",
-		"Francisco Chang",
-		"Mexico",
-	},
-	{3,
-		"Ernst Handel",
-		"Roland Mendel",
-		"Austria",
-	},
-	{4,
-		"Island Trading",
-		"Helen Bennett",
-		"UK",
-	},
-	{5,
-		"Laughing Bacchus Winecellars",
-		"Yoshi Tannamuri",
-		"Canada",
-	},
-	{6,
-		"Magazzini Alimentari Riuniti",
-		"Giovanni Rovelli",
-		"Italy",
-	},
+var Tabledata = getData()
+
+func getData() []TableData {
+	file, err := os.Open("data.json")
+
+	if err != nil {
+		log.Fatalln("Error opening data")
+	}
+	bytes, err := io.ReadAll(file)
+
+	if err != nil {
+		log.Fatalln("Error reading data bytes")
+	}
+
+	var data = []TableData{}
+
+	err = json.Unmarshal(bytes, &data)
+
+	if err != nil {
+		log.Fatalln("Error unmarshalling data")
+	}
+
+	return data
 }
